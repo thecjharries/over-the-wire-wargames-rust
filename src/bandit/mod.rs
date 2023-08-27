@@ -115,5 +115,7 @@ mod tests {
             .unwrap();
         let result = session.call("echo hello").await.unwrap();
         assert_eq!("hello\n", result.output());
+        assert!(result.success());
+        session.close().await.unwrap();
     }
 }
