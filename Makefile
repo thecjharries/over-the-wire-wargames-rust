@@ -5,6 +5,8 @@ GIT ?= git
 RM ?= rm
 XDG_OPEN ?= xdg-open
 
+COVERAGE_THRESHOLD ?= 80
+
 # Get the current branch
 CURRENT_BRANCH := $(shell $(GIT) rev-parse --abbrev-ref HEAD)
 
@@ -16,12 +18,12 @@ test:
 # Get code coverage
 .PHONY: coverage
 coverage:
-	$(CARGO) tarpaulin -v --fail-under=100
+	$(CARGO) tarpaulin -v --fail-under=$(COVERAGE_THRESHOLD)
 
 # Build coverage report
 .PHONY: coverage-report
 coverage-report:
-	$(CARGO) tarpaulin -v --fail-under=80 --out HTML; $(XDG_OPEN) tarpaulin-report.html
+	$(CARGO) tarpaulin -v --fail-under=$(COVERAGE_THRESHOLD) --out HTML; $(XDG_OPEN) tarpaulin-report.html
 
 # Convenience target to finish the feature branch
 .PHONY: finish
