@@ -11,3 +11,88 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+// Major portions of this file come from russh's examples
+// https://github.com/warp-tech/russh/blob/main/russh/examples/remote_shell_call.rs
+
+use std::io::Write;
+use std::sync::Arc;
+use std::time::Duration;
+
+use anyhow::Result;
+use async_trait::async_trait;
+use russh::*;
+use russh_keys::*;
+
+pub struct CommandResult {
+    output: Vec<u8>,
+    code: Option<u32>,
+}
+
+impl CommandResult {
+    pub fn output(&self) -> String {
+        String::from_utf8_lossy(&self.output).into()
+    }
+
+    pub fn success(&self) -> bool {
+        self.code == Some(0)
+    }
+}
+
+pub struct Client {}
+
+#[async_trait]
+impl client::Handler for Client {
+    type Error = anyhow::Error;
+
+    async fn check_server_key(
+        self,
+        _server_public_key: &key::PublicKey,
+    ) -> Result<(Self, bool), Self::Error> {
+        Ok((self, true))
+    }
+}
+
+pub struct Session {
+    session: client::Handle<Client>,
+}
+
+impl Session {
+    pub async fn connect(host: &str, port: &str, user: &str, password: &str) -> Result<Self> {
+        let config = client::Config {
+            inactivity_timeout: Some(Duration::from_secs(5)),
+            ..<_>::default()
+        };
+        let config = Arc::new(config);
+        let sh = Client {};
+        let mut session = client::connect(config, format!("{host}:{port}"), sh).await?;
+        let _auth_res = session.authenticate_password(user, password).await?;
+        Ok(Self { session })
+    }
+
+    pub async fn call(&mut self, command: &str) -> Result<CommandResult> {
+        let mut channel = self.session.channel_open_session().await?;
+        channel.exec(true, command).await?;
+        let mut output = Vec::new();
+        let mut code = None;
+        while let Some(msg) = channel.wait().await {
+            match msg {
+                russh::ChannelMsg::Data { ref data } => {
+                    output.write_all(data).unwrap();
+                }
+                russh::ChannelMsg::ExitStatus { exit_status } => {
+                    code = Some(exit_status);
+                }
+                _ => {}
+            }
+        }
+        Ok(CommandResult { output, code })
+    }
+
+    pub async fn close(&mut self) -> Result<()> {
+        self.session
+            .disconnect(Disconnect::ByApplication, "", "English")
+            .await?;
+        Ok(())
+    }
+}
