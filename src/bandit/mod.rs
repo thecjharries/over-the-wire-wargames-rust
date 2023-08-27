@@ -96,3 +96,24 @@ impl Session {
         Ok(())
     }
 }
+
+#[cfg(not(tarpaulin_include))]
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::load_settings;
+
+    #[tokio::test]
+    async fn session_can_connect_to_bandit_host() {
+        let settings = load_settings("bandit");
+        let host = settings.get_string("host").unwrap();
+        let port = settings.get_string("port").unwrap();
+        let user = settings.get_string("user").unwrap();
+        let password = settings.get_string("pass").unwrap();
+        let mut session = Session::connect(&host, &port, &user, &password)
+            .await
+            .unwrap();
+        let result = session.call("echo hello").await.unwrap();
+        assert_eq!("hello\n", result.output());
+    }
+}
