@@ -11,3 +11,37 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+use config::Config;
+
+pub mod bandit;
+
+pub fn load_settings(wargame: &str) -> Config {
+    Config::builder()
+        .add_source(config::File::with_name(
+            format!("settings/{}.yaml", wargame).as_str(),
+        ))
+        .build()
+        .unwrap()
+}
+
+#[cfg(not(tarpaulin_include))]
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn load_settings_can_load_existing_wargame() {
+        let settings = load_settings("bandit");
+        assert_eq!(
+            "bandit.labs.overthewire.org",
+            settings.get_string("host").unwrap()
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn load_settings_panics_on_nonexistent_wargame() {
+        load_settings("nonexistent");
+    }
+}
