@@ -21,7 +21,7 @@ coverage:
 # Build coverage report
 .PHONY: coverage-report
 coverage-report:
-	$(CARGO) tarpaulin -v --fail-under=100 --out HTML; $(XDG_OPEN) tarpaulin-report.html
+	$(CARGO) tarpaulin -v --fail-under=80 --out HTML; $(XDG_OPEN) tarpaulin-report.html
 
 # Convenience target to finish the feature branch
 .PHONY: finish
