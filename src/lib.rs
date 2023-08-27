@@ -31,11 +31,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_load_settings() {
+    fn load_settings_can_load_existing_wargame() {
         let settings = load_settings("bandit");
         assert_eq!(
             "bandit.labs.overthewire.org",
             settings.get_string("host").unwrap()
         );
+    }
+
+    #[test]
+    #[should_panic]
+    fn load_settings_panics_on_nonexistent_wargame() {
+        load_settings("nonexistent");
     }
 }
