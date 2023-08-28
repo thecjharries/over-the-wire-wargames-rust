@@ -112,8 +112,8 @@ mod tests {
         let settings = load_settings("bandit");
         let host = settings.get_string("host").unwrap();
         let port = settings.get_string("port").unwrap();
-        let user = settings.get_string("user").unwrap();
-        let password = settings.get_string("pass").unwrap();
+        let user = "bandit0";
+        let password = "bandit0";
         let mut session = Session::connect(&host, &port, &user, &password)
             .await
             .unwrap();
