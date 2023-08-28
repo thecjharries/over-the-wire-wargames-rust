@@ -97,6 +97,10 @@ impl Session {
     }
 }
 
+fn level1_password() -> String {
+    todo!()
+}
+
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
