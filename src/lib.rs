@@ -53,4 +53,17 @@ mod tests {
     fn load_settings_panics_on_nonexistent_wargame() {
         load_settings("nonexistent");
     }
+
+    #[test]
+    fn get_level_password_returns_correct_password() {
+        let settings = load_settings("bandit");
+        assert_eq!("bandit0", get_level_password(settings, 0));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_level_password_panics_on_nonexistent_level() {
+        let settings = load_settings("bandit");
+        get_level_password(settings, 200);
+    }
 }
