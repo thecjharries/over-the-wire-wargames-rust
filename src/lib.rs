@@ -25,6 +25,15 @@ pub fn load_settings(wargame: &str) -> Config {
         .unwrap()
 }
 
+pub fn get_level_password(config: Config, level: u8) -> String {
+    config
+        .get_array("passwords")
+        .unwrap()
+        .get(level as usize)
+        .unwrap()
+        .to_string()
+}
+
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
@@ -43,5 +52,18 @@ mod tests {
     #[should_panic]
     fn load_settings_panics_on_nonexistent_wargame() {
         load_settings("nonexistent");
+    }
+
+    #[test]
+    fn get_level_password_returns_correct_password() {
+        let settings = load_settings("bandit");
+        assert_eq!("bandit0", get_level_password(settings, 0));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_level_password_panics_on_nonexistent_level() {
+        let settings = load_settings("bandit");
+        get_level_password(settings, 200);
     }
 }

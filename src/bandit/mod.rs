@@ -24,6 +24,8 @@ use async_trait::async_trait;
 use russh::*;
 use russh_keys::*;
 
+use crate::load_settings;
+
 pub struct CommandResult {
     output: Vec<u8>,
     code: Option<u32>,
@@ -97,19 +99,48 @@ impl Session {
     }
 }
 
+pub async fn level1_password() -> String {
+    let settings = load_settings("bandit");
+    let host = settings.get_string("host").unwrap();
+    let port = settings.get_string("port").unwrap();
+    let user = "bandit0";
+    let password = "bandit0";
+    let mut session = Session::connect(&host, &port, &user, &password)
+        .await
+        .unwrap();
+    let result = session.call("cat readme").await.unwrap();
+    session.close().await.unwrap();
+    result.output().trim().to_string()
+}
+
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::load_settings;
 
     #[tokio::test]
     async fn session_can_connect_to_bandit_host() {
         let settings = load_settings("bandit");
         let host = settings.get_string("host").unwrap();
         let port = settings.get_string("port").unwrap();
-        let user = settings.get_string("user").unwrap();
-        let password = settings.get_string("pass").unwrap();
+        let user = "bandit0";
+        let password = "bandit0";
+        let mut session = Session::connect(&host, &port, &user, &password)
+            .await
+            .unwrap();
+        let result = session.call("echo hello").await.unwrap();
+        assert_eq!("hello\n", result.output());
+        assert!(result.success());
+        session.close().await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn level1_password_returns_proper_value() {
+        let settings = load_settings("bandit");
+        let host = settings.get_string("host").unwrap();
+        let port = settings.get_string("port").unwrap();
+        let user = "bandit1";
+        let password = level1_password().await;
         let mut session = Session::connect(&host, &port, &user, &password)
             .await
             .unwrap();
