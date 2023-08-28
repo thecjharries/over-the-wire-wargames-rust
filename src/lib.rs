@@ -25,6 +25,15 @@ pub fn load_settings(wargame: &str) -> Config {
         .unwrap()
 }
 
+pub fn get_level_password(config: Config, level: u8) -> String {
+    config
+        .get_array("passwords")
+        .unwrap()
+        .get(level as usize)
+        .unwrap()
+        .to_string()
+}
+
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
