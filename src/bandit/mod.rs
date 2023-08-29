@@ -114,7 +114,17 @@ pub async fn level1_password() -> String {
 }
 
 pub async fn level2_password() -> String {
-    todo!()
+    let settings = load_settings("bandit");
+    let host = settings.get_string("host").unwrap();
+    let port = settings.get_string("port").unwrap();
+    let user = "bandit1";
+    let password = get_level_password(settings, 1);
+    let mut session = Session::connect(&host, &port, &user, &password)
+        .await
+        .unwrap();
+    let result = session.call("cat ./-").await.unwrap();
+    session.close().await.unwrap();
+    result.output().trim().to_string()
 }
 
 #[cfg(not(tarpaulin_include))]
