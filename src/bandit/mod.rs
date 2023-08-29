@@ -24,7 +24,7 @@ use async_trait::async_trait;
 use russh::*;
 use russh_keys::*;
 
-use crate::load_settings;
+use crate::{get_level_password, load_settings};
 
 pub struct CommandResult {
     output: Vec<u8>,
@@ -111,6 +111,10 @@ pub async fn level1_password() -> String {
     let result = session.call("cat readme").await.unwrap();
     session.close().await.unwrap();
     result.output().trim().to_string()
+}
+
+pub async fn level2_password() -> String {
+    todo!()
 }
 
 #[cfg(not(tarpaulin_include))]
