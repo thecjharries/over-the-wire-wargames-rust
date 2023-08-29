@@ -24,7 +24,7 @@ use async_trait::async_trait;
 use russh::*;
 use russh_keys::*;
 
-use crate::load_settings;
+use crate::{get_level_password, load_settings};
 
 pub struct CommandResult {
     output: Vec<u8>,
@@ -113,6 +113,20 @@ pub async fn level1_password() -> String {
     result.output().trim().to_string()
 }
 
+pub async fn level2_password() -> String {
+    let settings = load_settings("bandit");
+    let host = settings.get_string("host").unwrap();
+    let port = settings.get_string("port").unwrap();
+    let user = "bandit1";
+    let password = get_level_password(settings, 1);
+    let mut session = Session::connect(&host, &port, &user, &password)
+        .await
+        .unwrap();
+    let result = session.call("cat ./-").await.unwrap();
+    session.close().await.unwrap();
+    result.output().trim().to_string()
+}
+
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
@@ -141,6 +155,22 @@ mod tests {
         let port = settings.get_string("port").unwrap();
         let user = "bandit1";
         let password = level1_password().await;
+        let mut session = Session::connect(&host, &port, &user, &password)
+            .await
+            .unwrap();
+        let result = session.call("echo hello").await.unwrap();
+        assert_eq!("hello\n", result.output());
+        assert!(result.success());
+        session.close().await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn level2_password_returns_proper_value() {
+        let settings = load_settings("bandit");
+        let host = settings.get_string("host").unwrap();
+        let port = settings.get_string("port").unwrap();
+        let user = "bandit2";
+        let password = level2_password().await;
         let mut session = Session::connect(&host, &port, &user, &password)
             .await
             .unwrap();
