@@ -24,8 +24,6 @@ use async_trait::async_trait;
 use russh::*;
 use russh_keys::*;
 
-use crate::{get_level_password, load_settings};
-
 pub struct CommandResult {
     output: Vec<u8>,
     code: Option<u32>,
@@ -103,6 +101,8 @@ impl Session {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use crate::load_settings;
 
     #[tokio::test]
     async fn session_can_connect_to_bandit_host() {
