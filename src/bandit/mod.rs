@@ -70,15 +70,12 @@ pub async fn level4_password() -> String {
     let settings = load_settings("bandit");
     let host = settings.get_string("host").unwrap();
     let port = settings.get_string("port").unwrap();
-    let user = "bandit2";
-    let password = get_level_password(settings, 2);
+    let user = "bandit3";
+    let password = get_level_password(settings, 3);
     let mut session = Session::connect(&host, &port, &user, &password)
         .await
         .unwrap();
-    let result = session
-        .call("cat \"./spaces in this filename\"")
-        .await
-        .unwrap();
+    let result = session.call("cat \"./inhere/.hidden\"").await.unwrap();
     session.close().await.unwrap();
     result.output().trim().to_string()
 }
