@@ -15,6 +15,7 @@
 use config::Config;
 
 pub mod bandit;
+pub mod client;
 
 pub fn load_settings(wargame: &str) -> Config {
     Config::builder()
