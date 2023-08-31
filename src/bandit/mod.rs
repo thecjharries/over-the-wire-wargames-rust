@@ -82,6 +82,11 @@ pub async fn level4_password() -> String {
 }
 
 #[cfg(not(tarpaulin_include))]
+pub async fn level5_password() -> String {
+    todo!()
+}
+
+#[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
     use super::*;
