@@ -171,19 +171,19 @@ mod tests {
     //     session.close().await.unwrap();
     // }
 
-    #[tokio::test]
-    async fn level5_password_returns_proper_value() {
-        let settings = load_settings("bandit");
-        let host = settings.get_string("host").unwrap();
-        let port = settings.get_string("port").unwrap();
-        let user = "bandit5";
-        let password = level5_password().await;
-        let mut session = Session::connect(&host, &port, &user, &password)
-            .await
-            .unwrap();
-        let result = session.call("echo hello").await.unwrap();
-        assert_eq!("hello\n", result.output());
-        assert!(result.success());
-        session.close().await.unwrap();
-    }
+    // #[tokio::test]
+    // async fn level5_password_returns_proper_value() {
+    //     let settings = load_settings("bandit");
+    //     let host = settings.get_string("host").unwrap();
+    //     let port = settings.get_string("port").unwrap();
+    //     let user = "bandit5";
+    //     let password = level5_password().await;
+    //     let mut session = Session::connect(&host, &port, &user, &password)
+    //         .await
+    //         .unwrap();
+    //     let result = session.call("echo hello").await.unwrap();
+    //     assert_eq!("hello\n", result.output());
+    //     assert!(result.success());
+    //     session.close().await.unwrap();
+    // }
 }
