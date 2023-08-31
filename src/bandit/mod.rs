@@ -82,6 +82,27 @@ pub async fn level4_password() -> String {
 }
 
 #[cfg(not(tarpaulin_include))]
+pub async fn level5_password() -> String {
+    let settings = load_settings("bandit");
+    let host = settings.get_string("host").unwrap();
+    let port = settings.get_string("port").unwrap();
+    let user = "bandit4";
+    let password = get_level_password(settings, 4);
+    let mut session = Session::connect(&host, &port, &user, &password)
+        .await
+        .unwrap();
+    let result = session
+        .call(
+            "find ./inhere -type f -exec file {} + | awk -F: '/ ASCII text/{print $1}' | xargs cat",
+        )
+        .await
+        .unwrap();
+    print!("{}", result.output());
+    session.close().await.unwrap();
+    result.output().trim().to_string()
+}
+
+#[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -141,6 +162,22 @@ mod tests {
     //     let port = settings.get_string("port").unwrap();
     //     let user = "bandit4";
     //     let password = level4_password().await;
+    //     let mut session = Session::connect(&host, &port, &user, &password)
+    //         .await
+    //         .unwrap();
+    //     let result = session.call("echo hello").await.unwrap();
+    //     assert_eq!("hello\n", result.output());
+    //     assert!(result.success());
+    //     session.close().await.unwrap();
+    // }
+
+    // #[tokio::test]
+    // async fn level5_password_returns_proper_value() {
+    //     let settings = load_settings("bandit");
+    //     let host = settings.get_string("host").unwrap();
+    //     let port = settings.get_string("port").unwrap();
+    //     let user = "bandit5";
+    //     let password = level5_password().await;
     //     let mut session = Session::connect(&host, &port, &user, &password)
     //         .await
     //         .unwrap();
