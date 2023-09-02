@@ -15,86 +15,36 @@
 // Major portions of this file come from russh's examples
 // https://github.com/warp-tech/russh/blob/main/russh/examples/remote_shell_call.rs
 
-use std::io::Write;
-use std::sync::Arc;
-use std::time::Duration;
+use async_ssh2_tokio::client::{AuthMethod, Client, ServerCheckMethod};
 
-use anyhow::Result;
-use async_trait::async_trait;
-use russh::*;
-use russh_keys::*;
+use crate::{get_level_password, load_settings};
 
-pub struct CommandResult {
-    output: Vec<u8>,
-    code: Option<u32>,
+pub async fn get_client_from_settings(wargame: &str, level: u8) -> Client {
+    get_client_from_settings_with_password(
+        wargame,
+        level,
+        get_level_password(load_settings(wargame), level),
+    )
+    .await
 }
 
-impl CommandResult {
-    pub fn output(&self) -> String {
-        String::from_utf8_lossy(&self.output).into()
-    }
-
-    pub fn success(&self) -> bool {
-        self.code == Some(0)
-    }
-}
-
-pub struct Client {}
-
-#[async_trait]
-impl client::Handler for Client {
-    type Error = anyhow::Error;
-
-    async fn check_server_key(
-        self,
-        _server_public_key: &key::PublicKey,
-    ) -> Result<(Self, bool), Self::Error> {
-        Ok((self, true))
-    }
-}
-
-pub struct Session {
-    session: client::Handle<Client>,
-}
-
-impl Session {
-    pub async fn connect(host: &str, port: &str, user: &str, password: &str) -> Result<Self> {
-        let config = client::Config {
-            inactivity_timeout: Some(Duration::from_secs(5)),
-            ..<_>::default()
-        };
-        let config = Arc::new(config);
-        let sh = Client {};
-        let mut session = client::connect(config, format!("{host}:{port}"), sh).await?;
-        let _auth_res = session.authenticate_password(user, password).await?;
-        Ok(Self { session })
-    }
-
-    pub async fn call(&mut self, command: &str) -> Result<CommandResult> {
-        let mut channel = self.session.channel_open_session().await?;
-        channel.exec(true, command).await?;
-        let mut output = Vec::new();
-        let mut code = None;
-        while let Some(msg) = channel.wait().await {
-            match msg {
-                russh::ChannelMsg::Data { ref data } => {
-                    output.write_all(data).unwrap();
-                }
-                russh::ChannelMsg::ExitStatus { exit_status } => {
-                    code = Some(exit_status);
-                }
-                _ => {}
-            }
-        }
-        Ok(CommandResult { output, code })
-    }
-
-    pub async fn close(&mut self) -> Result<()> {
-        self.session
-            .disconnect(Disconnect::ByApplication, "", "English")
-            .await?;
-        Ok(())
-    }
+pub async fn get_client_from_settings_with_password(
+    wargame: &str,
+    level: u8,
+    password: String,
+) -> Client {
+    let settings = load_settings(wargame);
+    let host = settings.get_string("host").unwrap();
+    let port = settings.get_int("port").unwrap();
+    let user = format!("bandit{}", level);
+    Client::connect(
+        (host, port as u16),
+        &user,
+        AuthMethod::Password(password),
+        ServerCheckMethod::NoCheck,
+    )
+    .await
+    .unwrap()
 }
 
 #[cfg(not(tarpaulin_include))]
@@ -102,21 +52,11 @@ impl Session {
 mod tests {
     use super::*;
 
-    use crate::load_settings;
-
     #[tokio::test]
     async fn session_can_connect_to_bandit_host() {
-        let settings = load_settings("bandit");
-        let host = settings.get_string("host").unwrap();
-        let port = settings.get_string("port").unwrap();
-        let user = "bandit0";
-        let password = "bandit0";
-        let mut session = Session::connect(&host, &port, &user, &password)
-            .await
-            .unwrap();
-        let result = session.call("echo hello").await.unwrap();
-        assert_eq!("hello\n", result.output());
-        assert!(result.success());
-        session.close().await.unwrap();
+        let client = get_client_from_settings("bandit", 0).await;
+        let result = client.execute("echo hello").await.unwrap();
+        assert_eq!("hello\n", result.stdout);
+        assert_eq!(0, result.exit_status);
     }
 }
