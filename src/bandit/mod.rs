@@ -15,37 +15,7 @@
 // Major portions of this file come from russh's examples
 // https://github.com/warp-tech/russh/blob/main/russh/examples/remote_shell_call.rs
 
-use async_ssh2_tokio::client::{AuthMethod, Client, ServerCheckMethod};
-
-use crate::{get_level_password, load_settings};
-
-pub async fn get_client_from_settings(wargame: &str, level: u8) -> Client {
-    get_client_from_settings_with_password(
-        wargame,
-        level,
-        get_level_password(load_settings(wargame), level),
-    )
-    .await
-}
-
-pub async fn get_client_from_settings_with_password(
-    wargame: &str,
-    level: u8,
-    password: String,
-) -> Client {
-    let settings = load_settings(wargame);
-    let host = settings.get_string("host").unwrap();
-    let port = settings.get_int("port").unwrap();
-    let user = format!("bandit{}", level);
-    Client::connect(
-        (host, port as u16),
-        &user,
-        AuthMethod::Password(password),
-        ServerCheckMethod::NoCheck,
-    )
-    .await
-    .unwrap()
-}
+use crate::client::get_client_from_settings;
 
 #[cfg(not(tarpaulin_include))]
 pub async fn level1_password() -> String {
@@ -104,6 +74,8 @@ pub async fn level6_password() -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use crate::client::get_client_from_settings_with_password;
 
     // #[tokio::test]
     // async fn level1_password_returns_proper_value() {
