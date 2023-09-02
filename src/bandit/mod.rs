@@ -15,25 +15,25 @@
 // Major portions of this file come from russh's examples
 // https://github.com/warp-tech/russh/blob/main/russh/examples/remote_shell_call.rs
 
-use crate::client::get_client_from_settings;
+use crate::get_ssh_client_from_settings;
 
 #[cfg(not(tarpaulin_include))]
 pub async fn level1_password() -> String {
-    let client = get_client_from_settings("bandit", 0).await;
+    let client = get_ssh_client_from_settings("bandit", 0).await;
     let result = client.execute("cat readme").await.unwrap();
     result.stdout.trim().to_string()
 }
 
 #[cfg(not(tarpaulin_include))]
 pub async fn level2_password() -> String {
-    let client = get_client_from_settings("bandit", 1).await;
+    let client = get_ssh_client_from_settings("bandit", 1).await;
     let result = client.execute("cat ./-").await.unwrap();
     result.stdout.trim().to_string()
 }
 
 #[cfg(not(tarpaulin_include))]
 pub async fn level3_password() -> String {
-    let client = get_client_from_settings("bandit", 2).await;
+    let client = get_ssh_client_from_settings("bandit", 2).await;
     let result = client
         .execute("cat \"./spaces in this filename\"")
         .await
@@ -43,14 +43,14 @@ pub async fn level3_password() -> String {
 
 #[cfg(not(tarpaulin_include))]
 pub async fn level4_password() -> String {
-    let client = get_client_from_settings("bandit", 3).await;
+    let client = get_ssh_client_from_settings("bandit", 3).await;
     let result = client.execute("cat \"./inhere/.hidden\"").await.unwrap();
     result.stdout.trim().to_string()
 }
 
 #[cfg(not(tarpaulin_include))]
 pub async fn level5_password() -> String {
-    let client = get_client_from_settings("bandit", 4).await;
+    let client = get_ssh_client_from_settings("bandit", 4).await;
     let result = client
         .execute(
             "find ./inhere -type f -exec file {} + | awk -F: '/ ASCII text/{print $1}' | xargs cat",
@@ -62,7 +62,7 @@ pub async fn level5_password() -> String {
 
 #[cfg(not(tarpaulin_include))]
 pub async fn level6_password() -> String {
-    let client = get_client_from_settings("bandit", 5).await;
+    let client = get_ssh_client_from_settings("bandit", 5).await;
     let result = client
         .execute("find ./inhere -type f -size 1033c ! -perm /0111 | xargs cat")
         .await
@@ -75,12 +75,12 @@ pub async fn level6_password() -> String {
 mod tests {
     use super::*;
 
-    use crate::client::get_client_from_settings_with_password;
+    use crate::get_ssh_client_from_settings_with_password;
 
     // #[tokio::test]
     // async fn level1_password_returns_proper_value() {
     //     let client =
-    //         get_client_from_settings_with_password("bandit", 1, level1_password().await).await;
+    //         get_ssh_client_from_settings_with_password("bandit", 1, level1_password().await).await;
     //     let result = client.execute("echo hello").await.unwrap();
     //     assert_eq!("hello\n", result.stdout);
     //     assert_eq!(0, result.exit_status);
@@ -89,7 +89,7 @@ mod tests {
     // #[tokio::test]
     // async fn level2_password_returns_proper_value() {
     //     let client =
-    //         get_client_from_settings_with_password("bandit", 2, level2_password().await).await;
+    //         get_ssh_client_from_settings_with_password("bandit", 2, level2_password().await).await;
     //     let result = client.execute("echo hello").await.unwrap();
     //     assert_eq!("hello\n", result.stdout);
     //     assert_eq!(0, result.exit_status);
@@ -98,7 +98,7 @@ mod tests {
     // #[tokio::test]
     // async fn level3_password_returns_proper_value() {
     //     let client =
-    //         get_client_from_settings_with_password("bandit", 3, level3_password().await).await;
+    //         get_ssh_client_from_settings_with_password("bandit", 3, level3_password().await).await;
     //     let result = client.execute("echo hello").await.unwrap();
     //     assert_eq!("hello\n", result.stdout);
     //     assert_eq!(0, result.exit_status);
@@ -107,7 +107,7 @@ mod tests {
     // #[tokio::test]
     // async fn level4_password_returns_proper_value() {
     //     let client =
-    //         get_client_from_settings_with_password("bandit", 4, level4_password().await).await;
+    //         get_ssh_client_from_settings_with_password("bandit", 4, level4_password().await).await;
     //     let result = client.execute("echo hello").await.unwrap();
     //     assert_eq!("hello\n", result.stdout);
     //     assert_eq!(0, result.exit_status);
@@ -116,7 +116,7 @@ mod tests {
     // #[tokio::test]
     // async fn level5_password_returns_proper_value() {
     //     let client =
-    //         get_client_from_settings_with_password("bandit", 5, level5_password().await).await;
+    //         get_ssh_client_from_settings_with_password("bandit", 5, level5_password().await).await;
     //     let result = client.execute("echo hello").await.unwrap();
     //     assert_eq!("hello\n", result.stdout);
     //     assert_eq!(0, result.exit_status);
@@ -125,7 +125,7 @@ mod tests {
     // #[tokio::test]
     // async fn level6_password_returns_proper_value() {
     //     let client =
-    //         get_client_from_settings_with_password("bandit", 6, level6_password().await).await;
+    //         get_ssh_client_from_settings_with_password("bandit", 6, level6_password().await).await;
     //     let result = client.execute("echo hello").await.unwrap();
     //     assert_eq!("hello\n", result.stdout);
     //     assert_eq!(0, result.exit_status);

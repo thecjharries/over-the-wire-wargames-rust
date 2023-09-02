@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use async_ssh2_tokio::client::{AuthMethod, Client, ServerCheckMethod};
 use config::Config;
 
 pub mod bandit;
-pub mod client;
 
 pub fn load_settings(wargame: &str) -> Config {
     Config::builder()
@@ -33,6 +33,36 @@ pub fn get_level_password(config: Config, level: u8) -> String {
         .get(level as usize)
         .unwrap()
         .to_string()
+}
+
+#[cfg(not(tarpaulin_include))]
+pub async fn get_ssh_client_from_settings(wargame: &str, level: u8) -> Client {
+    get_ssh_client_from_settings_with_password(
+        wargame,
+        level,
+        get_level_password(load_settings(wargame), level),
+    )
+    .await
+}
+
+#[cfg(not(tarpaulin_include))]
+pub async fn get_ssh_client_from_settings_with_password(
+    wargame: &str,
+    level: u8,
+    password: String,
+) -> Client {
+    let settings = load_settings(wargame);
+    let host = settings.get_string("host").unwrap();
+    let port = settings.get_int("port").unwrap();
+    let user = format!("bandit{}", level);
+    Client::connect(
+        (host, port as u16),
+        &user,
+        AuthMethod::Password(password),
+        ServerCheckMethod::NoCheck,
+    )
+    .await
+    .unwrap()
 }
 
 #[cfg(not(tarpaulin_include))]
