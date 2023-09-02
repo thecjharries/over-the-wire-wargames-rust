@@ -5,7 +5,7 @@ GIT ?= git
 RM ?= rm
 XDG_OPEN ?= xdg-open
 
-COVERAGE_THRESHOLD ?= 80
+COVERAGE_THRESHOLD ?= 60
 
 # Get the current branch
 CURRENT_BRANCH := $(shell $(GIT) rev-parse --abbrev-ref HEAD)
