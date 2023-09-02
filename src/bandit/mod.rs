@@ -73,8 +73,9 @@ pub async fn level6_password() -> String {
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
+    #[allow(unused_imports)]
     use super::*;
-
+    #[allow(unused_imports)]
     use crate::get_ssh_client_from_settings_with_password;
 
     // #[tokio::test]
