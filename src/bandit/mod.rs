@@ -36,6 +36,25 @@ pub async fn get_client_from_settings(wargame: &str, level: u8) -> Client {
     .unwrap()
 }
 
+pub async fn get_client_from_settings_with_password(
+    wargame: &str,
+    level: u8,
+    password: String,
+) -> Client {
+    let settings = load_settings(wargame);
+    let host = settings.get_string("host").unwrap();
+    let port = settings.get_int("port").unwrap();
+    let user = format!("bandit{}", level);
+    Client::connect(
+        (host, port as u16),
+        &user,
+        AuthMethod::Password(password),
+        ServerCheckMethod::NoCheck,
+    )
+    .await
+    .unwrap()
+}
+
 #[cfg(not(tarpaulin_include))]
 pub async fn level1_password() -> String {
     let settings = load_settings("bandit");
