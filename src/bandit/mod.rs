@@ -20,6 +20,22 @@ use async_ssh2_tokio::client::{AuthMethod, Client, ServerCheckMethod};
 use crate::client::Session;
 use crate::{get_level_password, load_settings};
 
+pub async fn get_client_from_settings(wargame: &str, level: u8) -> Client {
+    let settings = load_settings(wargame);
+    let host = settings.get_string("host").unwrap();
+    let port = settings.get_int("port").unwrap();
+    let user = format!("bandit{}", level);
+    let password = get_level_password(settings, level);
+    Client::connect(
+        (host, port as u16),
+        &user,
+        AuthMethod::Password(password),
+        ServerCheckMethod::NoCheck,
+    )
+    .await
+    .unwrap()
+}
+
 #[cfg(not(tarpaulin_include))]
 pub async fn level1_password() -> String {
     let settings = load_settings("bandit");
@@ -105,19 +121,7 @@ pub async fn level5_password() -> String {
 }
 
 pub async fn level6_password() -> String {
-    let settings = load_settings("bandit");
-    let host = settings.get_string("host").unwrap();
-    let port = settings.get_int("port").unwrap();
-    let user = "bandit5";
-    let password = get_level_password(settings, 5);
-    let client = Client::connect(
-        (host, port as u16),
-        user,
-        AuthMethod::Password(password),
-        ServerCheckMethod::NoCheck,
-    )
-    .await
-    .unwrap();
+    let client = get_client("bandit", 5).await;
     let result = client
         .execute("find ./inhere -type f -size 1033c ! -perm /0111 | xargs cat")
         .await
