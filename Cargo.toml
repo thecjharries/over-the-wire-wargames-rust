@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.75"
+async-ssh2-tokio = "0.7.1"
 async-trait = "0.1.73"
 config = "0.13.3"
 russh = "0.38.0"
