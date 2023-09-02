@@ -21,19 +21,12 @@ use crate::client::Session;
 use crate::{get_level_password, load_settings};
 
 pub async fn get_client_from_settings(wargame: &str, level: u8) -> Client {
-    let settings = load_settings(wargame);
-    let host = settings.get_string("host").unwrap();
-    let port = settings.get_int("port").unwrap();
-    let user = format!("bandit{}", level);
-    let password = get_level_password(settings, level);
-    Client::connect(
-        (host, port as u16),
-        &user,
-        AuthMethod::Password(password),
-        ServerCheckMethod::NoCheck,
+    get_client_from_settings_with_password(
+        wargame,
+        level,
+        get_level_password(load_settings(wargame), level),
     )
     .await
-    .unwrap()
 }
 
 pub async fn get_client_from_settings_with_password(
