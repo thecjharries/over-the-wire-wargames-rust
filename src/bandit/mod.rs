@@ -15,6 +15,8 @@
 // Major portions of this file come from russh's examples
 // https://github.com/warp-tech/russh/blob/main/russh/examples/remote_shell_call.rs
 
+use async_ssh2_tokio::client::{AuthMethod, Client, ServerCheckMethod};
+
 use crate::client::Session;
 use crate::{get_level_password, load_settings};
 
@@ -102,23 +104,25 @@ pub async fn level5_password() -> String {
     result.output().trim().to_string()
 }
 
-#[cfg(not(tarpaulin_include))]
 pub async fn level6_password() -> String {
     let settings = load_settings("bandit");
     let host = settings.get_string("host").unwrap();
-    let port = settings.get_string("port").unwrap();
+    let port = settings.get_int("port").unwrap();
     let user = "bandit5";
     let password = get_level_password(settings, 5);
-    let mut session = Session::connect(&host, &port, &user, &password)
+    let client = Client::connect(
+        (host, port as u16),
+        user,
+        AuthMethod::Password(password),
+        ServerCheckMethod::NoCheck,
+    )
+    .await
+    .unwrap();
+    let result = client
+        .execute("find ./inhere -type f -size 1033c ! -perm /0111 | xargs cat")
         .await
         .unwrap();
-    let result = session
-        .call("find ./inhere -type f -size 1033c ! -perm /0111 | xargs cat")
-        .await
-        .unwrap();
-    print!("{}", result.output());
-    session.close().await.unwrap();
-    result.output().trim().to_string()
+    result.stdout.trim().to_string()
 }
 
 #[cfg(not(tarpaulin_include))]
@@ -206,19 +210,19 @@ mod tests {
     //     session.close().await.unwrap();
     // }
 
-    // #[tokio::test]
-    // async fn level6_password_returns_proper_value() {
-    //     let settings = load_settings("bandit");
-    //     let host = settings.get_string("host").unwrap();
-    //     let port = settings.get_string("port").unwrap();
-    //     let user = "bandit6";
-    //     let password = level6_password().await;
-    //     let mut session = Session::connect(&host, &port, &user, &password)
-    //         .await
-    //         .unwrap();
-    //     let result = session.call("echo hello").await.unwrap();
-    //     assert_eq!("hello\n", result.output());
-    //     assert!(result.success());
-    //     session.close().await.unwrap();
-    // }
+    #[tokio::test]
+    async fn level6_password_returns_proper_value() {
+        let settings = load_settings("bandit");
+        let host = settings.get_string("host").unwrap();
+        let port = settings.get_string("port").unwrap();
+        let user = "bandit6";
+        let password = level6_password().await;
+        let mut session = Session::connect(&host, &port, &user, &password)
+            .await
+            .unwrap();
+        let result = session.call("echo hello").await.unwrap();
+        assert_eq!("hello\n", result.output());
+        assert!(result.success());
+        session.close().await.unwrap();
+    }
 }
