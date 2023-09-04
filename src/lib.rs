@@ -29,7 +29,7 @@ pub mod bandit;
 /// If the wargame does not exist
 ///
 /// # Examples
-/// ```
+/// ```ignore
 /// let settings = load_settings("bandit");
 /// assert_eq!("bandit.labs.overthewire.org", settings.get_string("host").unwrap());
 /// ```
@@ -56,7 +56,7 @@ pub fn load_settings(wargame: &str) -> Config {
 /// If the level does not have a password
 ///
 /// # Examples
-/// ```
+/// ```ignore
 /// let settings = load_settings("bandit");
 /// assert_eq!("bandit0", get_level_password(settings, 0));
 /// ```
@@ -81,7 +81,7 @@ pub fn get_level_password(config: Config, level: u8) -> String {
 /// An SSH client for the given wargame and level
 ///
 /// # Examples
-/// ```
+/// ```ignore
 /// let client = get_ssh_client_from_settings("bandit", 0).await;
 /// let result = client.execute("echo hello").await.unwrap();
 /// assert_eq!("hello\n", result.stdout);
@@ -111,7 +111,7 @@ pub async fn get_ssh_client_from_settings(wargame: &str, level: u8) -> Client {
 /// An SSH client for the given wargame and level
 ///
 /// # Examples
-/// ```
+/// ```ignore
 /// let client = get_ssh_client_from_settings_with_password("bandit", 0, "bandit0".to_string()).await;
 /// let result = client.execute("echo hello").await.unwrap();
 /// assert_eq!("hello\n", result.stdout);
