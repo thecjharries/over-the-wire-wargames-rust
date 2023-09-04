@@ -83,36 +83,9 @@ mod tests {
     use crate::get_ssh_client_from_settings_with_password;
 
     // #[tokio::test]
-    // async fn level1_password_returns_proper_value() {
+    // async fn level6_password_returns_proper_value() {
     //     let client =
-    //         get_ssh_client_from_settings_with_password("bandit", 1, level1_password().await).await;
-    //     let result = client.execute("echo hello").await.unwrap();
-    //     assert_eq!("hello\n", result.stdout);
-    //     assert_eq!(0, result.exit_status);
-    // }
-
-    // #[tokio::test]
-    // async fn level2_password_returns_proper_value() {
-    //     let client =
-    //         get_ssh_client_from_settings_with_password("bandit", 2, level2_password().await).await;
-    //     let result = client.execute("echo hello").await.unwrap();
-    //     assert_eq!("hello\n", result.stdout);
-    //     assert_eq!(0, result.exit_status);
-    // }
-
-    // #[tokio::test]
-    // async fn level3_password_returns_proper_value() {
-    //     let client =
-    //         get_ssh_client_from_settings_with_password("bandit", 3, level3_password().await).await;
-    //     let result = client.execute("echo hello").await.unwrap();
-    //     assert_eq!("hello\n", result.stdout);
-    //     assert_eq!(0, result.exit_status);
-    // }
-
-    // #[tokio::test]
-    // async fn level4_password_returns_proper_value() {
-    //     let client =
-    //         get_ssh_client_from_settings_with_password("bandit", 4, level4_password().await).await;
+    //         get_ssh_client_from_settings_with_password("bandit", 6, level6_password().await).await;
     //     let result = client.execute("echo hello").await.unwrap();
     //     assert_eq!("hello\n", result.stdout);
     //     assert_eq!(0, result.exit_status);
@@ -128,9 +101,36 @@ mod tests {
     // }
 
     // #[tokio::test]
-    // async fn level6_password_returns_proper_value() {
+    // async fn level4_password_returns_proper_value() {
     //     let client =
-    //         get_ssh_client_from_settings_with_password("bandit", 6, level6_password().await).await;
+    //         get_ssh_client_from_settings_with_password("bandit", 4, level4_password().await).await;
+    //     let result = client.execute("echo hello").await.unwrap();
+    //     assert_eq!("hello\n", result.stdout);
+    //     assert_eq!(0, result.exit_status);
+    // }
+
+    // #[tokio::test]
+    // async fn level3_password_returns_proper_value() {
+    //     let client =
+    //         get_ssh_client_from_settings_with_password("bandit", 3, level3_password().await).await;
+    //     let result = client.execute("echo hello").await.unwrap();
+    //     assert_eq!("hello\n", result.stdout);
+    //     assert_eq!(0, result.exit_status);
+    // }
+
+    // #[tokio::test]
+    // async fn level2_password_returns_proper_value() {
+    //     let client =
+    //         get_ssh_client_from_settings_with_password("bandit", 2, level2_password().await).await;
+    //     let result = client.execute("echo hello").await.unwrap();
+    //     assert_eq!("hello\n", result.stdout);
+    //     assert_eq!(0, result.exit_status);
+    // }
+
+    // #[tokio::test]
+    // async fn level1_password_returns_proper_value() {
+    //     let client =
+    //         get_ssh_client_from_settings_with_password("bandit", 1, level1_password().await).await;
     //     let result = client.execute("echo hello").await.unwrap();
     //     assert_eq!("hello\n", result.stdout);
     //     assert_eq!(0, result.exit_status);
