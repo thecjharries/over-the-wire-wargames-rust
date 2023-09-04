@@ -14,12 +14,11 @@
 
 use async_ssh2_tokio::client::{AuthMethod, Client, ServerCheckMethod};
 use config::Config;
-use paste::paste;
 
-#[macro_use]
-macro_rules! test_ssh_wargame_level {
+#[allow(unused_macros)]
+macro_rules! test_ssh_level {
     ($wargame:literal, $level:literal) => {
-        paste! {
+        paste::paste! {
             #[tokio::test]
             async fn [<level $level _password_returns_proper_value>]() {
                 let client =
