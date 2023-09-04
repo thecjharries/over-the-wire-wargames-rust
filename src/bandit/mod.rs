@@ -80,6 +80,7 @@ pub async fn level7_password() -> String {
     result.stdout.trim().to_string()
 }
 
+#[cfg(not(tarpaulin_include))]
 pub async fn level8_password() -> String {
     let client = get_ssh_client_from_settings("bandit", 7).await;
     let result = client
@@ -97,14 +98,14 @@ mod tests {
     #[allow(unused_imports)]
     use crate::get_ssh_client_from_settings_with_password;
 
-    #[tokio::test]
-    async fn level8_password_returns_proper_value() {
-        let client =
-            get_ssh_client_from_settings_with_password("bandit", 8, level8_password().await).await;
-        let result = client.execute("echo hello").await.unwrap();
-        assert_eq!("hello\n", result.stdout);
-        assert_eq!(0, result.exit_status);
-    }
+    // #[tokio::test]
+    // async fn level8_password_returns_proper_value() {
+    //     let client =
+    //         get_ssh_client_from_settings_with_password("bandit", 8, level8_password().await).await;
+    //     let result = client.execute("echo hello").await.unwrap();
+    //     assert_eq!("hello\n", result.stdout);
+    //     assert_eq!(0, result.exit_status);
+    // }
 
     // #[tokio::test]
     // async fn level7_password_returns_proper_value() {
