@@ -17,21 +17,15 @@
 
 use paste::paste;
 
-use crate::get_ssh_client_from_settings;
+use crate::{get_ssh_client_from_settings, ssh_single_command_level};
 
-macro_rules! level_password {
-    ($level:literal) => {
-        paste! {
-            pub async fn [<level $level _password>]() -> String {
-                let client = get_ssh_client_from_settings("bandit", $level - 1).await;
-                let result = client.execute("cat readme").await.unwrap();
-                result.stdout.trim().to_string()
-            }
-        }
+macro_rules! bandit_single_command_level {
+    ($level:literal, $command:literal) => {
+        ssh_single_command_level!("bandit", $level, $command);
     };
 }
 
-level_password!(1);
+bandit_single_command_level!(1, "cat readme");
 
 // #[cfg(not(tarpaulin_include))]
 // pub async fn level1_password() -> String {
@@ -139,5 +133,5 @@ mod tests {
     // test_bandit_level!(4);
     // test_bandit_level!(3);
     // test_bandit_level!(2);
-    // test_bandit_level!(1);
+    test_bandit_level!(1);
 }
