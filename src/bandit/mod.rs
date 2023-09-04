@@ -15,14 +15,30 @@
 // Major portions of this file come from russh's examples
 // https://github.com/warp-tech/russh/blob/main/russh/examples/remote_shell_call.rs
 
+use paste::paste;
+
 use crate::get_ssh_client_from_settings;
 
-#[cfg(not(tarpaulin_include))]
-pub async fn level1_password() -> String {
-    let client = get_ssh_client_from_settings("bandit", 0).await;
-    let result = client.execute("cat readme").await.unwrap();
-    result.stdout.trim().to_string()
+macro_rules! level_password {
+    ($level:literal) => {
+        paste! {
+            pub async fn [<level $level _password>]() -> String {
+                let client = get_ssh_client_from_settings("bandit", $level - 1).await;
+                let result = client.execute("cat readme").await.unwrap();
+                result.stdout.trim().to_string()
+            }
+        }
+    };
 }
+
+level_password!(1);
+
+// #[cfg(not(tarpaulin_include))]
+// pub async fn level1_password() -> String {
+//     let client = get_ssh_client_from_settings("bandit", 0).await;
+//     let result = client.execute("cat readme").await.unwrap();
+//     result.stdout.trim().to_string()
+// }
 
 #[cfg(not(tarpaulin_include))]
 pub async fn level2_password() -> String {
@@ -180,12 +196,12 @@ mod tests {
     //     assert_eq!(0, result.exit_status);
     // }
 
-    // #[tokio::test]
-    // async fn level1_password_returns_proper_value() {
-    //     let client =
-    //         get_ssh_client_from_settings_with_password("bandit", 1, level1_password().await).await;
-    //     let result = client.execute("echo hello").await.unwrap();
-    //     assert_eq!("hello\n", result.stdout);
-    //     assert_eq!(0, result.exit_status);
-    // }
+    #[tokio::test]
+    async fn level1_password_returns_proper_value() {
+        let client =
+            get_ssh_client_from_settings_with_password("bandit", 1, level1_password().await).await;
+        let result = client.execute("echo hello").await.unwrap();
+        assert_eq!("hello\n", result.stdout);
+        assert_eq!(0, result.exit_status);
+    }
 }
