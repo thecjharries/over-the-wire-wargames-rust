@@ -91,7 +91,12 @@ pub async fn level8_password() -> String {
 }
 
 pub async fn level9_password() -> String {
-    todo!()
+    let client = get_ssh_client_from_settings("bandit", 8).await;
+    let result = client
+        .execute("cat data.txt | sort | uniq -u")
+        .await
+        .unwrap();
+    result.stdout.trim().to_string()
 }
 
 #[cfg(not(tarpaulin_include))]
