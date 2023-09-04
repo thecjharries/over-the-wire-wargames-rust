@@ -124,6 +124,8 @@ mod tests {
     #[allow(unused_imports)]
     use crate::get_ssh_client_from_settings_with_password;
 
+    test_ssh_wargame_level!("bandit", 1);
+
     // #[tokio::test]
     // async fn level9_password_returns_proper_value() {
     //     let client =
@@ -195,13 +197,4 @@ mod tests {
     //     assert_eq!("hello\n", result.stdout);
     //     assert_eq!(0, result.exit_status);
     // }
-
-    #[tokio::test]
-    async fn level1_password_returns_proper_value() {
-        let client =
-            get_ssh_client_from_settings_with_password("bandit", 1, level1_password().await).await;
-        let result = client.execute("echo hello").await.unwrap();
-        assert_eq!("hello\n", result.stdout);
-        assert_eq!(0, result.exit_status);
-    }
 }

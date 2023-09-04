@@ -14,6 +14,23 @@
 
 use async_ssh2_tokio::client::{AuthMethod, Client, ServerCheckMethod};
 use config::Config;
+use paste::paste;
+
+#[macro_use]
+macro_rules! test_ssh_wargame_level {
+    ($wargame:literal, $level:literal) => {
+        paste! {
+            #[tokio::test]
+            async fn [<level $level _password_returns_proper_value>]() {
+                let client =
+                    get_ssh_client_from_settings_with_password($wargame, $level, [<level $level _password>]().await).await;
+                let result = client.execute("echo hello").await.unwrap();
+                assert_eq!("hello\n", result.stdout);
+                assert_eq!(0, result.exit_status);
+            }
+        }
+    };
+}
 
 pub mod bandit;
 
