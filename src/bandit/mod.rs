@@ -71,7 +71,12 @@ pub async fn level6_password() -> String {
 }
 
 pub async fn level7_password() -> String {
-    todo!()
+    let client = get_ssh_client_from_settings("bandit", 6).await;
+    let result = client
+        .execute("find / -size 33c -group bandit6 -user bandit7 -print 2>/dev/null | xargs cat")
+        .await
+        .unwrap();
+    result.stdout.trim().to_string()
 }
 
 #[cfg(not(tarpaulin_include))]
