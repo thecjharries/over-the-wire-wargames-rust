@@ -90,6 +90,10 @@ pub async fn level8_password() -> String {
     result.stdout.trim().to_string()
 }
 
+pub async fn level9_password() -> String {
+    todo!()
+}
+
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
