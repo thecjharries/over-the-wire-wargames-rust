@@ -122,7 +122,7 @@ mod tests {
     #[allow(unused_imports)]
     use super::*;
     #[allow(unused_imports)]
-    use crate::get_ssh_client_from_settings_with_password;
+    use crate::{get_ssh_client_from_settings_with_password, test_ssh_level};
 
     test_ssh_level!("bandit", 1);
 

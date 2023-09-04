@@ -15,22 +15,6 @@
 use async_ssh2_tokio::client::{AuthMethod, Client, ServerCheckMethod};
 use config::Config;
 
-#[allow(unused_macros)]
-macro_rules! test_ssh_level {
-    ($wargame:literal, $level:literal) => {
-        paste::paste! {
-            #[tokio::test]
-            async fn [<level $level _password_returns_proper_value>]() {
-                let client =
-                    get_ssh_client_from_settings_with_password($wargame, $level, [<level $level _password>]().await).await;
-                let result = client.execute("echo hello").await.unwrap();
-                assert_eq!("hello\n", result.stdout);
-                assert_eq!(0, result.exit_status);
-            }
-        }
-    };
-}
-
 pub mod bandit;
 
 /// Load the settings for a given wargame
@@ -152,6 +136,25 @@ pub async fn get_ssh_client_from_settings_with_password(
     .await
     .unwrap()
 }
+
+#[allow(unused_macros)]
+macro_rules! test_ssh_level {
+    ($wargame:literal, $level:literal) => {
+        paste::paste! {
+            #[tokio::test]
+            async fn [<level $level _password_returns_proper_value>]() {
+                let client =
+                    get_ssh_client_from_settings_with_password($wargame, $level, [<level $level _password>]().await).await;
+                let result = client.execute("echo hello").await.unwrap();
+                assert_eq!("hello\n", result.stdout);
+                assert_eq!(0, result.exit_status);
+            }
+        }
+    };
+}
+
+#[allow(unused_imports)]
+pub(crate) use test_ssh_level;
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
