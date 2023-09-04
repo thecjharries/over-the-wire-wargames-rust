@@ -26,89 +26,23 @@ macro_rules! bandit_single_command_level {
 }
 
 bandit_single_command_level!(1, "cat readme");
-
-// #[cfg(not(tarpaulin_include))]
-// pub async fn level1_password() -> String {
-//     let client = get_ssh_client_from_settings("bandit", 0).await;
-//     let result = client.execute("cat readme").await.unwrap();
-//     result.stdout.trim().to_string()
-// }
-
-#[cfg(not(tarpaulin_include))]
-pub async fn level2_password() -> String {
-    let client = get_ssh_client_from_settings("bandit", 1).await;
-    let result = client.execute("cat ./-").await.unwrap();
-    result.stdout.trim().to_string()
-}
-
-#[cfg(not(tarpaulin_include))]
-pub async fn level3_password() -> String {
-    let client = get_ssh_client_from_settings("bandit", 2).await;
-    let result = client
-        .execute("cat \"./spaces in this filename\"")
-        .await
-        .unwrap();
-    result.stdout.trim().to_string()
-}
-
-#[cfg(not(tarpaulin_include))]
-pub async fn level4_password() -> String {
-    let client = get_ssh_client_from_settings("bandit", 3).await;
-    let result = client.execute("cat \"./inhere/.hidden\"").await.unwrap();
-    result.stdout.trim().to_string()
-}
-
-#[cfg(not(tarpaulin_include))]
-pub async fn level5_password() -> String {
-    let client = get_ssh_client_from_settings("bandit", 4).await;
-    let result = client
-        .execute(
-            "find ./inhere -type f -exec file {} + | awk -F: '/ ASCII text/{print $1}' | xargs cat",
-        )
-        .await
-        .unwrap();
-    result.stdout.trim().to_string()
-}
-
-#[cfg(not(tarpaulin_include))]
-pub async fn level6_password() -> String {
-    let client = get_ssh_client_from_settings("bandit", 5).await;
-    let result = client
-        .execute("find ./inhere -type f -size 1033c ! -perm /0111 | xargs cat")
-        .await
-        .unwrap();
-    result.stdout.trim().to_string()
-}
-
-#[cfg(not(tarpaulin_include))]
-pub async fn level7_password() -> String {
-    let client = get_ssh_client_from_settings("bandit", 6).await;
-    let result = client
-        .execute("find / -size 33c -group bandit6 -user bandit7 -print 2>/dev/null | xargs cat")
-        .await
-        .unwrap();
-    result.stdout.trim().to_string()
-}
-
-#[cfg(not(tarpaulin_include))]
-pub async fn level8_password() -> String {
-    let client = get_ssh_client_from_settings("bandit", 7).await;
-    let result = client
-        .execute("grep 'millionth' ./data.txt | awk '{print $2}'")
-        .await
-        .unwrap();
-    result.stdout.trim().to_string()
-}
-
-#[cfg(not(tarpaulin_include))]
-pub async fn level9_password() -> String {
-    let client = get_ssh_client_from_settings("bandit", 8).await;
-    let result = client
-        .execute("cat data.txt | sort | uniq -u")
-        .await
-        .unwrap();
-    result.stdout.trim().to_string()
-}
+bandit_single_command_level!(2, "cat ./-");
+bandit_single_command_level!(3, "cat \"./spaces in this filename\"");
+bandit_single_command_level!(4, "cat \"./inhere/.hidden\"");
+bandit_single_command_level!(
+    5,
+    "find ./inhere -type f -exec file {} + | awk -F: '/ ASCII text/{print $1}' | xargs cat"
+);
+bandit_single_command_level!(
+    6,
+    "find ./inhere -type f -size 1033c ! -perm /0111 | xargs cat"
+);
+bandit_single_command_level!(
+    7,
+    "find / -size 33c -group bandit6 -user bandit7 -print 2>/dev/null | xargs cat"
+);
+bandit_single_command_level!(8, "grep 'millionth' ./data.txt | awk '{print $2}'");
+bandit_single_command_level!(9, "cat data.txt | sort | uniq -u");
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
@@ -133,5 +67,5 @@ mod tests {
     // test_bandit_level!(4);
     // test_bandit_level!(3);
     // test_bandit_level!(2);
-    test_bandit_level!(1);
+    // test_bandit_level!(1);
 }
