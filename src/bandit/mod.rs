@@ -81,7 +81,12 @@ pub async fn level7_password() -> String {
 }
 
 pub async fn level8_password() -> String {
-    todo!()
+    let client = get_ssh_client_from_settings("bandit", 7).await;
+    let result = client
+        .execute("grep 'millionth' ./data.txt | awk '{print $2}'")
+        .await
+        .unwrap();
+    result.stdout.trim().to_string()
 }
 
 #[cfg(not(tarpaulin_include))]
