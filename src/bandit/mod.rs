@@ -60,6 +60,7 @@ mod tests {
         };
     }
 
+    test_bandit_level!(10);
     // test_bandit_level!(9);
     // test_bandit_level!(8);
     // test_bandit_level!(7);
