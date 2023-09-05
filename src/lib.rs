@@ -138,6 +138,44 @@ pub async fn get_ssh_client_from_settings_with_password(
 }
 
 #[cfg(not(tarpaulin_include))]
+mod macros {
+    #[allow(unused_macros)]
+    macro_rules! test_ssh_level {
+    ($wargame:literal, $level:literal) => {
+        paste::paste! {
+            #[tokio::test]
+            async fn [<level $level _password_returns_proper_value>]() {
+                let client =
+                    crate::get_ssh_client_from_settings_with_password($wargame, $level, [<level $level _password>]().await).await;
+                let result = client.execute("echo hello").await.unwrap();
+                assert_eq!("hello\n", result.stdout);
+                assert_eq!(0, result.exit_status);
+            }
+        }
+    };
+}
+
+    #[allow(unused_imports)]
+    pub(crate) use test_ssh_level;
+
+    #[allow(unused_macros)]
+    macro_rules! ssh_single_command_level {
+        ($wargame:literal, $level:literal, $command:literal) => {
+            paste! {
+                pub async fn [<level $level _password>]() -> String {
+                    let client = crate::get_ssh_client_from_settings($wargame, $level - 1).await;
+                    let result = client.execute($command).await.unwrap();
+                    result.stdout.trim().to_string()
+                }
+            }
+        };
+    }
+
+    #[allow(unused_imports)]
+    pub(crate) use ssh_single_command_level;
+}
+
+#[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
     use super::*;
