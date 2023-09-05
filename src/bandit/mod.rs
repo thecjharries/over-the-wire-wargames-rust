@@ -17,7 +17,7 @@
 
 use paste::paste;
 
-use crate::{get_ssh_client_from_settings, ssh_single_command_level};
+use crate::macros::ssh_single_command_level;
 
 macro_rules! bandit_single_command_level {
     ($level:literal, $command:literal) => {
@@ -50,7 +50,7 @@ mod tests {
     #[allow(unused_imports)]
     use super::*;
     #[allow(unused_imports)]
-    use crate::{get_ssh_client_from_settings_with_password, test_ssh_level};
+    use crate::macros::test_ssh_level;
 
     #[allow(unused_macros)]
     macro_rules! test_bandit_level {
