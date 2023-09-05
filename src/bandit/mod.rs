@@ -43,6 +43,7 @@ bandit_single_command_level!(
 );
 bandit_single_command_level!(8, "grep 'millionth' ./data.txt | awk '{print $2}'");
 bandit_single_command_level!(9, "cat data.txt | sort | uniq -u");
+bandit_single_command_level!(10, "todo");
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
