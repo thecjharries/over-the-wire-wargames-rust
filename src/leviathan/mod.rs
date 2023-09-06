@@ -25,7 +25,10 @@ macro_rules! leviathan_single_command_level {
     };
 }
 
-leviathan_single_command_level!(1, "todo");
+leviathan_single_command_level!(
+    1,
+    "sed -nr 's/.*leviathan1 is (\\w+)\".*/\\1/p' .backup/bookmarks.html"
+);
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
