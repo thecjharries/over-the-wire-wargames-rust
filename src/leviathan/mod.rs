@@ -41,4 +41,6 @@ mod tests {
             test_ssh_level!("leviathan", $level);
         };
     }
+
+    test_leviathan_level!(1);
 }
