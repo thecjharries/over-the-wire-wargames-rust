@@ -1,0 +1,7 @@
+# Settings for the Leviathan wargame
+---
+host: leviathan.labs.overthewire.org
+port: 2223
+passwords:
+  - leviathan0
+  - PPIfmI1qsA
