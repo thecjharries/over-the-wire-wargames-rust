@@ -25,6 +25,8 @@ macro_rules! leviathan_single_command_level {
     };
 }
 
+leviathan_single_command_level!(1, "todo");
+
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
 mod tests {
