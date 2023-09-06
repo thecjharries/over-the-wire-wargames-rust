@@ -16,6 +16,7 @@ use async_ssh2_tokio::client::{AuthMethod, Client, ServerCheckMethod};
 use config::Config;
 
 pub mod bandit;
+pub mod leviathan;
 
 /// Load the settings for a given wargame
 ///
