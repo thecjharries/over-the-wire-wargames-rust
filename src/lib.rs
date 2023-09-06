@@ -127,7 +127,7 @@ pub async fn get_ssh_client_from_settings_with_password(
     let settings = load_settings(wargame);
     let host = settings.get_string("host").unwrap();
     let port = settings.get_int("port").unwrap();
-    let user = format!("bandit{}", level);
+    let user = format!("{wargame}{level}");
     Client::connect(
         (host, port as u16),
         &user,
@@ -166,6 +166,7 @@ mod macros {
                 pub async fn [<level $level _password>]() -> String {
                     let client = crate::get_ssh_client_from_settings($wargame, $level - 1).await;
                     let result = client.execute($command).await.unwrap();
+                    println!("{}", result.stdout);
                     result.stdout.trim().to_string()
                 }
             }
