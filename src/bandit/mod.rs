@@ -48,10 +48,7 @@ bandit_single_command_level!(
     "strings data.txt | awk '/==+/{print $2;}' | tac | head -n 1"
 );
 
-bandit_single_command_level!(
-    11,
-    "todo"
-);
+bandit_single_command_level!(11, "todo");
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
@@ -68,6 +65,7 @@ mod tests {
         };
     }
 
+    test_bandit_level!(11);
     // test_bandit_level!(10);
     // test_bandit_level!(9);
     // test_bandit_level!(8);
