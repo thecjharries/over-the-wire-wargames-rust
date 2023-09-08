@@ -46,7 +46,9 @@ clean:
 	$(RM) -rf Cargo.lock
 	$(RM) -rf tarpaulin-report.html
 
+# Ensure specific variable is nonempty
 # https://stackoverflow.com/a/7367903
+.PHONY: guard-%
 guard-%:
 	@ if [ "${${*}}" = "" ]; then \
 		echo "Environment variable $* not set"; \
