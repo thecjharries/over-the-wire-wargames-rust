@@ -47,8 +47,8 @@ bandit_single_command_level!(
     10,
     "strings data.txt | awk '/==+/{print $2;}' | tac | head -n 1"
 );
-
 bandit_single_command_level!(11, "cat data.txt | base64 --decode | awk '{print $4}'");
+bandit_single_command_level!(12, "todo");
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
