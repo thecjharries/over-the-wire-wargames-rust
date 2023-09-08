@@ -9,6 +9,8 @@ COVERAGE_THRESHOLD ?= 60
 
 # Get the current branch
 CURRENT_BRANCH := $(shell $(GIT) rev-parse --abbrev-ref HEAD)
+WARGAME := $(word 2, $(subst /, ,$(CURRENT_BRANCH)))
+LEVEL := $(word 3, $(subst /, ,$(CURRENT_BRANCH)))
 
 # Run the tests
 .PHONY: test
