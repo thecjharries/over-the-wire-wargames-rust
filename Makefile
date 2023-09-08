@@ -43,3 +43,10 @@ clean:
 	$(RM) -rf target
 	$(RM) -rf Cargo.lock
 	$(RM) -rf tarpaulin-report.html
+
+# https://stackoverflow.com/a/7367903
+guard-%:
+	@ if [ "${${*}}" = "" ]; then \
+		echo "Environment variable $* not set"; \
+		exit 1; \
+	fi
