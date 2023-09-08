@@ -54,3 +54,28 @@ guard-%:
 		echo "Environment variable $* not set"; \
 		exit 1; \
 	fi
+
+# Create the stub for a wargame level
+.PHONY: git-stub
+git-stub: guard-WARGAME guard-LEVEL
+	$(GIT) commit src/$(WARGAME) -m "Stub $(WARGAME) $(LEVEL)"
+
+# Create the test for a wargame level
+.PHONY: git-test
+git-test: guard-WARGAME guard-LEVEL
+	$(GIT) commit src/$(WARGAME) -m "Test $(WARGAME) $(LEVEL)"
+
+# Implement a wargame level
+.PHONY: git-implement
+git-implement: guard-WARGAME guard-LEVEL
+	$(GIT) commit src/$(WARGAME) -m "Solve $(WARGAME) $(LEVEL)"
+
+# Add a wargame level password
+.PHONY: git-pass
+git-pass: guard-WARGAME guard-LEVEL
+	$(GIT) commit settings/$(WARGAME).yaml -m "Add $(WARGAME) $(LEVEL) password"
+
+# Disable a wargame level's tests
+.PHONY: git-disable
+git-disable: guard-WARGAME guard-LEVEL
+	$(GIT) commit src/$(WARGAME) -m "Disable $(WARGAME) $(LEVEL) to reduce connections"
