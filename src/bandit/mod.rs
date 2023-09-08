@@ -47,8 +47,11 @@ bandit_single_command_level!(
     10,
     "strings data.txt | awk '/==+/{print $2;}' | tac | head -n 1"
 );
-
 bandit_single_command_level!(11, "cat data.txt | base64 --decode | awk '{print $4}'");
+bandit_single_command_level!(
+    12,
+    "cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m' | awk '{print $4}'"
+);
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
@@ -65,6 +68,7 @@ mod tests {
         };
     }
 
+    // test_bandit_level!(12);
     // test_bandit_level!(11);
     // test_bandit_level!(10);
     // test_bandit_level!(9);
