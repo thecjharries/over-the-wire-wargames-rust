@@ -69,6 +69,7 @@ mod tests {
         };
     }
 
+    test_bandit_level!(13);
     // test_bandit_level!(12);
     // test_bandit_level!(11);
     // test_bandit_level!(10);
