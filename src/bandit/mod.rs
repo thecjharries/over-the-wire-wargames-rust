@@ -52,6 +52,7 @@ bandit_single_command_level!(
     12,
     "cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m' | awk '{print $4}'"
 );
+bandit_single_command_level!(13, "todo");
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
