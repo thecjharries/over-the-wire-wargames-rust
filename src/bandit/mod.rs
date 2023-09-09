@@ -52,7 +52,7 @@ bandit_single_command_level!(
     12,
     "cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m' | awk '{print $4}'"
 );
-bandit_single_command_level!(13, "todo");
+bandit_single_command_level!(13, "cat data.txt | xxd -r | gzip --decompress | bzip2 --decompress | gzip --decompress | tar --extract --to-stdout | tar --extract --to-stdout | bzip2 --decompress | tar --extract --to-stdout | gzip --decompress | awk '{print $4}'");
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
