@@ -66,6 +66,7 @@ bandit_single_command_level!(
         gzip --decompress |
         awk '{print $4}'"
 );
+bandit_single_command_level!(14, "ssh -o StrictHostKeyChecking=no -i sshkey.private bandit14@localhost -p 2220 'cat /etc/bandit_pass/bandit14' 2>/dev/null");
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
@@ -82,6 +83,7 @@ mod tests {
         };
     }
 
+    // test_bandit_level!(14);
     // test_bandit_level!(13);
     // test_bandit_level!(12);
     // test_bandit_level!(11);
