@@ -66,6 +66,7 @@ bandit_single_command_level!(
         gzip --decompress |
         awk '{print $4}'"
 );
+bandit_single_command_level!(14, "todo");
 
 #[cfg(not(tarpaulin_include))]
 #[cfg(test)]
